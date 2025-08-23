@@ -1,0 +1,30 @@
+# Node.js Microservices App
+
+This is a simple Node.js microservices application with two services:
+- `user-service`
+- `product-service`
+
+Each service is independently dockerized and deployed to AWS EKS using Kubernetes.
+
+## 🛠 Deployment Steps
+
+1. Build Docker images:
+   ```bash
+   docker build -t your-dockerhub/user-service:latest ./user-service
+   docker build -t your-dockerhub/product-service:latest ./product-service
+   docker push your-dockerhub/user-service:latest
+   docker push your-dockerhub/product-service:latest
+2. Deploy to EKS:
+   kubectl apply -f k8s/namespace.yaml
+   kubectl apply -f k8s/user-deployment.yaml
+   kubectl apply -f k8s/product-deployment.yaml
+   
+4. Verify:
+   kubectl get all -n microservices-app
+   
+Endpoints :
+
+user-service: /api/users
+product-service: /api/products
+
+   
