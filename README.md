@@ -1,4 +1,4 @@
-To add Jenkins credentials to the checkout (or git) step in a Declarative Pipeline, you should use the credentialsId parameter with the git step.
+1) To add Jenkins credentials to the checkout (or git) step in a Declarative Pipeline, you should use the credentialsId parameter with the git step.
 
 Here's how to update your Checkout stage to use Jenkins credentials (e.g., for private Git repositories that require authentication):
 
