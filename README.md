@@ -85,7 +85,105 @@ Select scopes like repo, read:org, etc., depending on your access needs.
 
 Once the credentials are saved, your Checkout stage will authenticate securely using them.
 
-2) Great question — understanding the difference between npm ci and npm install is important for reliable and efficient builds, especially in CI/CD environments like Jenkins.
+2)The error you're seeing:
+
+/var/lib/jenkins/workspace/poc-pipeline@tmp/durable-293294f4/script.sh.copy: 1: npm: not found
+means that npm (Node.js) is not installed or not available in the PATH on the Jenkins agent that ran the pipeline.
+
+✅ Solution Options
+🔧 Option 1: Install Node.js on the Jenkins Agent
+
+Ensure that Node.js (which includes npm) is installed on the machine/agent that runs the job.
+
+On Ubuntu/Debian, you can install it like this:
+sudo apt update
+sudo apt install nodejs npm -y
+
+Or for a more up-to-date version:
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt install -y nodejs
+
+Then confirm:
+  node -v
+  npm -v
+
+🔁 Option 2: Use Jenkins Tool Configuration
+
+If you want better control, configure Node.js as a tool in Jenkins:
+
+Go to Manage Jenkins → Global Tool Configuration.
+
+Find NodeJS section (install NodeJS Plugin
+ if it's missing).
+
+Click Add NodeJS.
+
+Give it a name (e.g., Node 18), select a version, and check “Install automatically.”
+
+Save.
+
+Then update your pipeline to use the tool:
+
+pipeline {
+    agent any
+    tools {
+        nodejs 'Node 18'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', 
+                    credentialsId: 'github-https-creds', 
+                    url: 'https://github.com/vamshi-rdy/complete-code.git'
+            }
+        }
+
+        stage('Install & Lint') {
+            steps {
+                sh 'npm ci'
+                sh 'npm run lint'
+            }
+        }
+    }
+}
+✅ Option 3: Use a Docker Agent with Node Preinstalled
+
+If your Jenkins server supports Docker, you can use a Docker image with Node.js:
+
+pipeline {
+    agent {
+        docker {
+            image 'node:18'
+            args '-u root' // Optional: use root user
+        }
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', 
+                    credentialsId: 'github-https-creds', 
+                    url: 'https://github.com/vamshi-rdy/complete-code.git'
+            }
+        }
+
+        stage('Install & Lint') {
+            steps {
+                sh 'npm ci'
+                sh 'npm run lint'
+            }
+        }
+    }
+}
+This is clean, portable, and doesn't depend on what's installed on the Jenkins host.
+✅ Recommendation
+
+If you're just testing and want quick results, go with Option 3 (Docker agent).
+
+If you're setting up for long-term use, configure Node.js as a Jenkins tool (Option 2).
+
+## b) Great question — understanding the difference between npm ci and npm install is important for reliable and efficient builds, especially in CI/CD environments like Jenkins.
    ⚖️ npm install vs npm ci — Key Differences
 
 
