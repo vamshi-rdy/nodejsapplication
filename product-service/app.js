@@ -1,8 +1,8 @@
 const express = require('express');
 const app = express();
-const productRoutes = require('./routes/productRoutes');
+// const productRoutes = require('./routes/productRoutes');  // uncomment ,if endpoints are used
 
-app.use('/api/products', productRoutes);
+// app.use('/api/products', productRoutes);                  // uncomment ,if endpoints are used
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
