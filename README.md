@@ -233,3 +233,6 @@ Quickly installing exact deps	npm ci
 
 Use npm install when you’re developing.
 Use npm ci when you’re deploying or testing in CI, where you want fast, deterministic installs.
+
+
+# Install Docker plugin, Docker pipeline plugin, kubernetes cli plugin, aws-creds plugin, kuberenetes plugin 
